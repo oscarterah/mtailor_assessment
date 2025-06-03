@@ -52,5 +52,9 @@ docker build . --file Dockerfile --tag imagenet-classifier:ci
 
 ### 7. Test Docker Image
 ```bash
-python test.py -- docker
+python test.py --docker
+```
+### 8. Test Cerebrium server
+```bash
+python test_server.py n01667114_mud_turtle.JPEG
 ```
