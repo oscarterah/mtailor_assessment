@@ -19,14 +19,6 @@ class Preprocessor:
         tensor = np.transpose(array, (2, 0, 1))[None, :, :, :]
         return tensor
     
-    def process_numpy(self, image):
-        image = Image.open(image).convert('RGB')
-        array = np.array(image, dtype=np.float32)
-        array = array / 255.0
-        array = (array - self.mean) / self.std
-        #convert HWC to CHW and add batch dimension (1, C,H,W) creating a torch tensor format
-        tensor = np.transpose(array, (2,0,1))[None,:,:,:]
-        return tensor
     
 #delivarable
 class OnnxImageClassifier:

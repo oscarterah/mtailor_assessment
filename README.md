@@ -14,9 +14,10 @@
 Manually downloading the model weights:
 
 ```bash
-wget -O pytorch_model_weights.pth "https://www.dropbox.com/s/b7641ryzmkceoc9/pytorch_model_weights.pth?dl=1"
+wget -O pytorch_model_weights.pth "https://www.dropbox.com/s/b7641ryzmkceoc9/pytorch_model_weights.pth?dl=0"
 ```
-### 2. Create and activate a virtual environment (assuming use of linux or mac) tested on linux
+### 2. Create and activate a virtual environment 
+Assuming use of linux or mac but tested on linux
 
 ```bash
 python3.10 -m venv mtailorvenv3.10

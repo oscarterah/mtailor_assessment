@@ -1,0 +1,21 @@
+name: Deployment
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build Docker image
+      run: |
+          docker build . --file Dockerfile --tag imagenet-classifier:ci
+
+    - name: Install Requirements
+      run: pip install -r requirements.txt
+
+    - name: Run tests
+      run: python test.py
