@@ -31,13 +31,26 @@ pip install -r requiremnents.txt
 ```
 
 ### 4. Run convert_to_onnx.py to convert model
+This converts the downloaded pytorch model to onnx but with preprocessing in the onnx output file
 
 ```bash
 python convert_to_onnx.py
 ```
 
 ### 5. Runing Tests
+This test the model.onnx generated if it opens well, tests the preprocessor class
 
 ```bash
 python test.py
+```
+
+### 6. Build Docker Image
+
+```bash
+docker build . --file Dockerfile --tag imagenet-classifier:ci
+```
+
+### 7. Test Docker Image
+```bash
+python test.py -- docker
 ```

@@ -2,6 +2,8 @@ import os
 from PIL import Image
 import numpy as np
 from model import OnnxImageClassifier, Preprocessor
+import requests
+import argparse
 
 IMAGE_PATH = "n01440764_tench.jpeg"
 ONNX_MODEL_PATH = "model.onnx" 
@@ -51,22 +53,54 @@ def test_onnx_classifier_prediction():
         print(f"Error during OnnxImageClassifier prediction: {e}")
         return False
     
-if __name__ == "__main__":
- 
-    results = {}
-    results["Preprocessor.preprocess()"] = test_preprocessor_preprocess_method()
-    results["OnnxImageClassifier Instantiation"] = test_onnx_classifier_instantiation()
-    results["OnnxImageClassifier Prediction"] = test_onnx_classifier_prediction()
+def test_docker(image_path):
+    with open(image_path, "rb") as f:
+        files = {"model_bytes_str": ("test.jpg", f, "image/jpeg")}
+        response = requests.post("http://localhost:8000/predict", files=files)
 
-    print("\n--- Test Summary ---")
-    all_passed = True
-    for test_name, success in results.items():
-        status = "PASSED" if success else "FAILED"
-        print(f"{test_name}: {status}")
-        if not success:
-            all_passed = False
+    result = response.json()
+    print(result)
 
-    if all_passed:
-        print("\nAll tests passed!")
+    if result == 0:
+        return True
     else:
-        print("\nSome tests failed.")
+        return False
+    
+if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser(description="Run tests for image classification.")
+    parser.add_argument(
+        "--docker",
+        action="store_true", # Makes it a flag, True if present, False otherwise
+        help="Run the Docker endpoint test."
+    )
+    args = parser.parse_args()
+
+    results = {}
+    all_tests_passed = True
+
+    if args.docker:
+        # If --docker is specified, only run the Docker test
+        print("Running Docker endpoint test only as per --docker flag.")
+        docker_test_success = test_docker(IMAGE_PATH)
+        results["Docker Endpoint Test"] = docker_test_success
+        if not docker_test_success:
+            all_tests_passed = False
+    else:
+        results = {}
+        results["Preprocessor.preprocess()"] = test_preprocessor_preprocess_method()
+        results["OnnxImageClassifier Instantiation"] = test_onnx_classifier_instantiation()
+        results["OnnxImageClassifier Prediction"] = test_onnx_classifier_prediction()
+
+        print("\n--- Test Summary ---")
+        all_passed = True
+        for test_name, success in results.items():
+            status = "PASSED" if success else "FAILED"
+            print(f"{test_name}: {status}")
+            if not success:
+                all_passed = False
+
+        if all_passed:
+            print("\nAll tests passed!")
+        else:
+            print("\nSome tests failed.")
